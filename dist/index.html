@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html lang="ru"><head>
+	<meta charset="utf-8">
+	<title>Список работников</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.3/css/uikit.min.css">
+</head><body>
+	<main class="uk-container uk-margin-medium-top">
+		<div class="uk-text-left">
+			<button class="add-worker-btn uk-button uk-button-primary uk-button-small" uk-toggle="target: .modal__workers-actions"><span class="uk-margin-small-right" style="vertical-align: middle">Добавить работника</span><i uk-icon="plus"></i></button>
+		</div>
+		<div class="workers uk-margin-small-top">
+			<table class="uk-table uk-table-striped uk-table-small uk-table-middle">
+				<thead>
+					<th>Имя</th>
+					<th>Фамилия</th>
+					<th>Отчество</th>
+					<th class="uk-text-nowrap">Дата рождения</th>
+					<th class="uk-text-nowrap">Номер счёта</th>
+					<th class="uk-text-nowrap">Сумма на счёте</th>
+					<th style="width: 50px; min-width: 50px">Опции</th>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</main>
+
+	<div class="alert-box uk-container uk-position-bottom-center uk-position-fixed uk-position-small"></div>
+
+	<div class="modal modal__workers-actions" uk-modal>
+		<div class="uk-modal-dialog">
+			<div class="form">
+				<button class="uk-modal-close-default" type="button" uk-close></button>
+
+				<div class="uk-modal-header">
+					<h2 class="uk-modal-title">Добавить нового работника</h2>
+				</div>
+
+				<div class="uk-modal-body">
+					<form id="action" class="uk-form-horizontal uk-margin-auto">
+						<input id="bill_number" type="number" hidden>
+
+						<div>
+							<label class="uk-form-label" for="first_name">Имя работника</label>
+							<div class="uk-form-controls">
+								<input class="uk-input" id="first_name" type="text" placeholder="Василий" required>
+							</div>
+						</div>
+
+						<div class="uk-margin-small-top">
+							<label class="uk-form-label" for="last_name">Фамилия работника</label>
+							<div class="uk-form-controls">
+								<input class="uk-input" id="last_name" type="text" placeholder="Пупкин" required>
+							</div>
+						</div>
+
+						<div class="uk-margin-small-top">
+							<label class="uk-form-label" for="middle_name">Отчество работника</label>
+							<div class="uk-form-controls">
+								<input class="uk-input" id="middle_name" type="text" placeholder="Александрович" required>
+							</div>
+						</div>
+
+						<div class="uk-margin-small-top">
+							<label class="uk-form-label" for="birth_date">Дата рождения работника</label>
+							<div class="uk-form-controls">
+								<input class="uk-input" id="birth_date" type="date" required>
+							</div>
+						</div>
+
+						<div class="uk-margin-small-top">
+							<label class="uk-form-label" for="wealth">Сумма на счёте</label>
+							<div class="uk-form-controls">
+								<input class="uk-input" id="wealth" type="number" placeholder="0">
+							</div>
+						</div>
+					</form>
+
+					<div uk-alert hidden></div>
+				</div>
+
+				<div class="uk-modal-footer uk-text-right">
+					<button class="uk-button uk-button-default uk-modal-close">Отмена</button>
+					<button form="action" class="submit-btn uk-button uk-button-primary">Добавить</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.3/js/uikit.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.3/js/uikit-icons.min.js" defer></script>
+
+	<script src="./script.js" defer></script>
+</body></html>
