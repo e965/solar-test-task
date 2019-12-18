@@ -39,22 +39,26 @@ workers.forEach((worker, i, arr) => {
 		['wealth', worker.wealth],
 	]).forEach(item => formData.append(item[0], item[1]))
 
-	fetch('request.php', {
-		method: 'POST',
-		cache: 'no-store',
-		body: formData
-	})
-	.catch(e => {
-		console.log('Возникла какая-то ошибка!')
-	})
-	.finally(() => {
-		if (i === arr.length - 1) {
-			console.log('Данные успешно загружены. Обновите страницу.')
-		}
-	})
+	setTimeout(() => {
+		fetch('request.php', {
+			method: 'POST',
+			cache: 'no-store',
+			body: formData
+		})
+		.catch(e => {
+			console.log('Возникла какая-то ошибка!')
+		})
+		.finally(() => {
+			if (i === arr.length - 1) {
+				console.log('Данные успешно загружены. Обновите страницу.')
+			}
+		})
+	}, 200 * i)
 })
 
 // А ещё можно так:
-// workers.forEach(worker => {
-// 	addWorker(worker)
+// workers.forEach((worker, i) => {
+// 	setTimeout(() => {
+// 		addWorker(worker)
+// 	}, 200 * i)
 // })
