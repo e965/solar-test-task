@@ -7,11 +7,21 @@
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.3/css/uikit.min.css">
+
+	<style>
+		.uk-pagination button {
+			font: inherit;
+			background-color: transparent;
+			border: 0;
+			cursor: pointer;
+		}
+	</style>
 </head><body>
 	<main class="uk-container uk-margin-medium-top">
 		<div class="uk-text-left">
 			<button class="add-worker-btn uk-button uk-button-primary uk-button-small" uk-toggle="target: .modal__workers-actions"><span class="uk-margin-small-right" style="vertical-align: middle">Добавить работника</span><i uk-icon="plus"></i></button>
 		</div>
+
 		<div class="workers uk-margin-small-top">
 			<table class="uk-table uk-table-striped uk-table-small uk-table-middle">
 				<thead>
@@ -23,8 +33,11 @@
 					<th class="uk-text-nowrap">Сумма на счёте</th>
 					<th style="width: 50px; min-width: 50px">Опции</th>
 				</thead>
-				<tbody></tbody>
 			</table>
+		</div>
+
+		<div class="pagination uk-margin-medium-top">
+			<ul class="uk-pagination uk-flex-center"></ul>
 		</div>
 	</main>
 
@@ -60,7 +73,7 @@
 						<div class="uk-margin-small-top">
 							<label class="uk-form-label" for="middle_name">Отчество работника</label>
 							<div class="uk-form-controls">
-								<input class="uk-input" id="middle_name" type="text" placeholder="Александрович" required>
+								<input class="uk-input" id="middle_name" type="text" placeholder="Александрович">
 							</div>
 						</div>
 

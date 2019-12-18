@@ -52,7 +52,6 @@
 			if (
 				$first_name === '' ||
 				$last_name === '' ||
-				$middle_name === '' ||
 				$birth_date === '' ||
 				$wealth === ''
 			) {

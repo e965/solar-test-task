@@ -3,7 +3,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const reqURL = 'request.php'
 
-	const table = document.querySelector('.workers table tbody')
+	const table = document.querySelector('.workers table')
+
+	table.dataset.currentPage = 1
 
 	const modalActions = document.querySelector('.modal__workers-actions')
 
@@ -46,12 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		)
 	}
 
+	let clearNode = _node => {
+		while (_node.firstChild) {
+			_node.removeChild(_node.firstChild)
+		}
+	}
+
 	let params = ['first_name', 'last_name', 'middle_name', 'birth_date', 'bill_number', 'wealth']
 
-	let addTableRow = worker => {
+	let addTableRow = ({ worker, tableNode }) => {
 		let tableRow = document.createElement('tr')
-
-		tableRow.classList.add('uk-animation-slide-top-small')
 
 		tableRow.dataset.id = worker.bill_number
 
@@ -132,7 +138,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		tableRow.appendChild(tableDataButtons)
 
-		table.insertBefore(tableRow, table.firstChild)
+		tableNode.appendChild(tableRow)
+	}
+
+	let drawWorkers = ({ workers, currentPage = table.dataset.currentPage }) => {
+		window['__workers'] = workers;
+
+		[...table.getElementsByTagName('tbody')].forEach(tbody => {
+			tbody.remove()
+		})
+
+		let paginationNode = document.querySelector('.pagination ul')
+		clearNode(paginationNode)
+
+		let workersNum = workers.length
+		let magicNum = 8
+
+		let minNum = 0
+		let currNum = 0
+
+		let pagesCount = Math.trunc(workersNum / magicNum)
+
+		if (workersNum % magicNum !== 0) {
+			++pagesCount
+		}
+
+		paginationNode.hidden = (pagesCount === 1)
+
+		let offset = magicNum
+
+		for (let i = 1; i <= pagesCount; i++) {
+			let newTableBody = document.createElement('tbody')
+
+			newTableBody.classList.add('uk-animation-slide-top-small')
+
+			newTableBody.hidden = !(i === 1)
+			newTableBody.dataset.page = i
+
+			table.appendChild(newTableBody)
+
+			let pageSelectorItem = document.createElement('li')
+
+			let pageSelectorBtn = document.createElement('button')
+
+			pageSelectorBtn.innerText = i
+			pageSelectorBtn.dataset.page = i
+
+			if (i === 1) {
+				pageSelectorItem.classList.add('uk-active')
+			}
+
+			pageSelectorBtn.onclick = e => {
+				[...table.getElementsByTagName('tbody')].forEach(tbody => {
+					tbody.hidden = !(tbody.dataset.page === e.target.dataset.page)
+				});
+
+				table.dataset.currentPage = e.target.dataset.page;
+
+				[...paginationNode.getElementsByTagName('li')].forEach(li => {
+					li.classList.toggle('uk-active', (li === e.target.parentNode))
+				})
+			}
+
+			pageSelectorItem.appendChild(pageSelectorBtn)
+
+			paginationNode.appendChild(pageSelectorItem)
+
+			if (i === pagesCount) {
+				offset = workersNum
+			}
+
+			for (currNum = minNum; currNum <= offset; currNum++) {
+				if (currNum === offset) { break }
+
+				addTableRow({
+					worker: workers[currNum],
+					tableNode: table.querySelector(`tbody[data-page="${i}"]`)
+				})
+			}
+
+			if (currNum === offset) {
+				minNum = currNum
+				offset += magicNum
+			}
+		}
+
+		if (currentPage > 2) {
+			if (pagesCount >= currentPage) {
+				[...paginationNode.getElementsByTagName('button')].forEach(button => {
+					if (button.dataset.page == currentPage) {
+						button.click()
+					}
+				})
+			} else if (pagesCount < currentPage) {
+				[...paginationNode.getElementsByTagName('button')].forEach(button => {
+					if (button.dataset.page == pagesCount) {
+						button.click()
+					}
+				})
+			}
+		}
 	}
 
 	let addWorker = ({ first_name, last_name, middle_name, birth_date, wealth }) => {
@@ -164,7 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			.then(data => {
 				if (data.code === 1) {
 					newWorker.bill_number = data.data.bill_number
-					addTableRow(newWorker)
+
+					let workers = window['__workers']
+					workers.push(newWorker)
+
+					drawWorkers({ workers: workers })
 
 					UIkit.modal(modalActions).hide()
 
@@ -176,6 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
 			})
 	}
+
+	window['addWorker'] = addWorker
 
 	let editWorker = ({ first_name, last_name, middle_name, birth_date, bill_number, wealth }) => {
 		let formData = new FormData()
@@ -239,9 +350,18 @@ document.addEventListener('DOMContentLoaded', () => {
 			.then(response => response.json())
 			.then(data => {
 				if (data.code === 1) {
-					let workerRow = table.querySelector(`tr[data-id='${bill_number}']`)
+					let workers = window['__workers']
 
-					workerRow.remove()
+					// подсмотрел здесь https://stackoverflow.com/a/38699714
+
+					let index = workers.findIndex(worker => worker.bill_number == bill_number)
+
+					workers = [
+						...workers.slice(0, index),
+						...workers.slice(index + 1)
+					]
+
+					drawWorkers({ workers: workers })
 
 					newAlert({ text: data.msg })
 				} else if (data.code === 0) {
@@ -291,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		.then(request => request.json())
 		.then(data => {
 			if (data.code === 1) {
-				data.data.forEach(worker => addTableRow(worker))
+				drawWorkers({ workers: data.data })
 			}
 		})
 
